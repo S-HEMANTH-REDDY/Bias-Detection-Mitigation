@@ -1,7 +1,3 @@
-Here is the rewritten README with **your exact title preserved at the top**, formatted professionally for GitHub:
-
----
-
 # **Mitigating Gender Bias in AI-Based Hiring Systems**
 
 A full-stack framework designed to detect, mitigate, and explain gender-related biases in AI-assisted hiring pipelines using Large Language Models (LLMs). The project integrates modern fairness metrics, counterfactual analysis, and interpretable AI techniques to promote transparent and equitable hiring decisions.
@@ -133,14 +129,3 @@ POST /api/explain-decision
 * **Faithfulness:** Whether explanations reflect true model behavior
 * **Relevance:** Alignment between reasoning and candidate data
 * **Consistency:** Stability across similar candidate profiles
-
----
-
-If you'd like, I can also:
-
-✅ Add a **project banner**
-✅ Add **GitHub badges** (Python version, MIT license, build status, etc.)
-✅ Generate a **system architecture diagram**
-✅ Format this directly into your repository’s README.md
-
-Just tell me!
