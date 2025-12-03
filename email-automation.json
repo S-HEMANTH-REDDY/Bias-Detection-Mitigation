@@ -1,0 +1,804 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        416
+      ],
+      "id": "1fff2b81-47b5-4b25-884d-0b4755f550fc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28",
+          "mode": "list",
+          "cachedResultName": "Copy of email automation n8n - 123",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2014303045,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit#gid=2014303045"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1056,
+        416
+      ],
+      "id": "2b9ce943-1a50-4a38-b512-8a283f77a065",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "j3o9yYafzrD8H1cG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -464,
+        416
+      ],
+      "id": "f14660cc-5279-490a-8ab1-7704c4d6e122",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "domain": "={{ $json.Company }}",
+        "limit": 10,
+        "filters": {
+          "department": [
+            "hr",
+            "it"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.hunter",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        416
+      ],
+      "id": "1eea8c2a-8f94-46b1-87f3-59c6761aed4f",
+      "name": "Hunter",
+      "credentials": {
+        "hunterApi": {
+          "id": "ALoJE0RPpM6f0NJL",
+          "name": "Hunter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3d243cab-bb58-4129-96ef-f2c355c80886",
+              "name": "Company",
+              "value": "={{ $json['Company Name'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        416
+      ],
+      "id": "936ebe16-1c2c-47ab-9c2e-42e53ce50617",
+      "name": "Fetch Companies"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a38e15c4-b4ff-4b14-8c07-8ecf318bdfc4",
+              "name": "Name",
+              "value": "={{ $json.first_name + \" \" + $json.last_name}} ",
+              "type": "string"
+            },
+            {
+              "id": "109eba56-0a23-4efd-9090-3651c56e32cc",
+              "name": "Email",
+              "value": "={{ $json.value }}",
+              "type": "string"
+            },
+            {
+              "id": "d463168c-6718-4d86-9c76-81e582e33524",
+              "name": "Position",
+              "value": "={{ $json.position }}",
+              "type": "string"
+            },
+            {
+              "id": "6877a272-5a9f-4916-8331-fe550ab64129",
+              "name": "LinkedIn",
+              "value": "={{ $json.linkedin }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        400
+      ],
+      "id": "498e9f59-4997-4d13-94b1-666cbf296548",
+      "name": "Fetch Data"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Person name- {{ $json.Name }}\nPerson position- {{ $json.Position }}\nThe position I am applying for - {{ $('Get row(s) in sheet').item.json.Position }}, make sure the subject includes this role if adding, otherwise it can just be in the body, it should not be any other postion\n\nThis is the text from my resume: {{ $json.text }}\n\ncompany - {{ $('Get row(s) in sheet').item.json['Company Name'] }}\nPosition seeking referral for link - {{ $('Get row(s) in sheet').item.json.URL }}\n\n\"output_schema\": {\n    \"subject\": \"string\",\n    \"email_body\": \"string\",\n    \"anchor_topics\": [\n      \"string\"\n    ]\n  },\n  \"prompt\": \"You are a precise cold-outreach writer. Using the provided inputs, generate a crisp subject and a concise referral email for the specified role.\\n\\nGoals:\\n1) Personalize to the recipient by referencing their role, company context, and one concrete anchor topic from recent work or public signals.\\n2) Show 1–2 quantified proof points from my resume that align with the job requirements.\\n3) Ask for a referral for the specific role, including the job title and link, while keeping the message brief and easy to say yes to.\\n\\nHard constraints:\\n- Subject: 3–7 words, no emojis, no ALL CAPS.\\email:, 2–3 short paragraphs, no bullets, no bold, no links except the single job_link provided.\\n- Tone: professional; avoid fluff, clichés, and generic praise. No markdown.\\n- Personalization must mention exactly one or two anchor topics derived from public signals (post, talk, repo, product launch) or, if none, a shared stack or domain from job_requirements.\\n- Close with a clear referral ask and one lightweight next step.\\n\\nMethod:\\n1) From job_requirements, extract 3–5 must-have skills and the role’s core outcomes.\\n2) From my_resume, select 1–2 achievements with numbers that map directly to those outcomes.\\n3) From public_signals_about_contact and company_domain_industry, derive 1–2 anchor topics (e.g., \\\"your post on X\\\", \\\"the Y launch\\\", \\\"open-source Z\\\"). If none, use a credible fallback like shared tech stack or domain problem.\\n4) Draft:\\n   - Subject: action + outcome or relevance, 3–7 words.\\n   - Body paragraph 1 (hook): greet by name, reference the anchor topic concisely, tie to the role.\\n   - Body paragraph 2 (proof + ask): 1–2 quantified resume wins aligned to JD, then ask: \\\"If it seems like a fit, would you be open to referring me for [job_title]? Here’s the link: [job_link]. Happy to share a 3–5 line summary or code sample.\\\"\\n5) Keep sentences short, concrete, and skimmable. Prefer verbs like \\\"shipped, scaled, reduced, improved\\\".\\n\\nFormatting rules:\\n- Return JSON only in the exact output_schema.\\n- \\\"subject\\\" is a single line.\\n- \\\"email_body\\\" uses \\\\n for paragraph breaks; no extra line at end; no markdown; no quotes outside normal punctuation.\\n- \\\"anchor_topics\\\" is an array of 1–2 short phrases, each <= 80 characters, single line.\\n\\nQuality checks (must pass before returning):\\n- Subject <= 7 words.\\n.\\n- Contains recipient name and company.\\n- References at least 1 anchor topic.\\n- Includes a direct referral ask mentioning job_title and job_link.\\n\\nReturn exactly the following keys: subject, email_body, anchor_topics.\"\n\n\nMake sure the email body is atleast 3 paragraphs long + the CTA below \n\n\nEvery email should have a CTA that I am attaching my resume and my Linkedin Profile\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -176,
+        832
+      ],
+      "id": "3ca53b17-c10c-45ea-9827-f789b54bfe76",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        1072
+      ],
+      "id": "6807dae9-06e0-41a2-8efb-7356580d1ad8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YYEAETj9EqagyMt0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ (() => {\n  const src = $('AI Agent')?.item?.json?.output;\n  \n  if (!src) {\n    return { subject: '', email_body: '' };\n  }\n  \n  try {\n    let jsonStr = src;\n    \n    // If src is already an object, use it directly\n    if (typeof src === 'object') {\n      return {\n        subject: src.subject || '',\n        email_body: src.email_body || ''\n      };\n    }\n    \n    // Clean up the string - remove markdown code blocks and \"json\" prefix\n    jsonStr = jsonStr.trim();\n    jsonStr = jsonStr.replace(/^`+json\\s*/i, ''); // Remove ```json or `json\n    jsonStr = jsonStr.replace(/`+$/, ''); // Remove trailing backticks\n    jsonStr = jsonStr.trim();\n    \n    // Parse the cleaned JSON string - JSON.parse automatically handles \\n\n    const parsed = JSON.parse(jsonStr);\n    \n    return {\n      subject: parsed.subject || '',\n      email_body: parsed.email_body || ''\n    };\n  } catch (error) {\n    // If parsing fails, return empty fields with error details\n    return { \n      subject: '', \n      email_body: '',\n      error: `Failed to parse output: ${error.message}`\n    };\n  }\n})() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        832
+      ],
+      "id": "fff06314-3cda-431f-ae2d-1b290fdcd57e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Company",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        416
+      ],
+      "id": "6395d370-e576-48a9-b392-c6bc4b57d683",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "={{ $json.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json['Email Body'] }}\n\nLinkedIn Profile: ",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        832
+      ],
+      "id": "1f69889f-b047-41a5-8ff5-0a2a98986068",
+      "name": "Send a message",
+      "webhookId": "08909fe9-7faa-460a-9b5c-ea009af3d451",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "R3PZznryz2Cx2sjC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        368,
+        832
+      ],
+      "id": "ea24a9d0-0d23-4743-88ce-179603d0f6fa",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28",
+          "mode": "list",
+          "cachedResultName": "Copy of email automation n8n - 123",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1621273212,
+          "mode": "list",
+          "cachedResultName": "Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit#gid=1621273212"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Fetch Data').item.json.Name }}",
+            "Email": "={{ $('Fetch Data').item.json.Email }}",
+            "Company": "={{ $('Fetch Companies').item.json.Company }}",
+            "Subject": "={{ $json.subject }}",
+            "Email Body": "={{ $json.email_body }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email Body",
+              "displayName": "Email Body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -880,
+        832
+      ],
+      "id": "e8bfc35e-de1f-4354-95f7-4e06d85a862e",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "j3o9yYafzrD8H1cG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28",
+          "mode": "list",
+          "cachedResultName": "Copy of email automation n8n - 123",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1621273212,
+          "mode": "list",
+          "cachedResultName": "Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ONuthTnKp5rCc7CXrMwRSbBPICVlQmp_aZ3__webj28/edit#gid=1621273212"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        176
+      ],
+      "id": "1a1a3619-ca68-4f46-b079-e2eef0edf278",
+      "name": "Get row(s) in sheet1",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "j3o9yYafzrD8H1cG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        176
+      ],
+      "id": "76723afd-503e-41f0-aac2-fb7146b20552",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -128,
+        176
+      ],
+      "id": "40adc15d-c2c5-416b-80f6-11486e7c4168",
+      "name": "Merge",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "Email",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        496,
+        416
+      ],
+      "id": "4b4b330c-eb94-4327-a8cd-fa60c6c1244a",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "content": "# Cold-email automation - @jugaldb\n\n1. Takes about 5 minutes to run per company\n2. Finds all relevant people from the company, \n3. Sends an e-mail to 10 people from each company asking for referral ",
+        "height": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -512,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "cf995e98-f111-4413-840f-1514df7037bb",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Add Google Cloud Credentials\n\n1. sign in with google\n2. Prepare your sheet filter\n3. Add your sheet Link",
+        "height": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1104,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "8da709f2-c505-486f-ab9b-7e0bbedfc8f8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Add Google Cloud Credentials\n\n1. sign in with google\n2. Prepare your sheet filter\n3. Add your sheet Link",
+        "height": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -944,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "8644b169-14bd-4119-b55b-266caa985b12",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Add Google Cloud Credentials\n\n1. sign in with google\n2. Prepare your sheet filter\n3. Add your sheet Link",
+        "height": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "ed9715bb-39b6-4bb5-9f39-c21c2102f61b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Add Google Cloud Credentials\n\n1. sign in with google\n2. Prepare your sheet filter\n3. Add your sheet Link",
+        "height": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "0f858117-f43b-4626-84bf-1a6283094173",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Add Gemini Free tier api key\n\n1. sign in with google\n2. Create API key and project\n3. Add Free Tier key",
+        "height": 176
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "145e5cd7-0178-4655-8bf6-ed494e4e647a",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Hunter IO Api key\n\n1. Go-to https://hunter.io/api\n2. Sign up and go to - https://hunter.io/api-keys\n3. Click create \"New Key\" and copy paste it in this node",
+        "height": 192,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -672,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "8feac534-9fe5-4131-be37-4348a70d3e97",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        672
+      ],
+      "id": "48dd4a0b-84ab-4c2e-8042-10345f3e3a8d",
+      "name": "Download file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tDPXWhxLiJRHHXvI",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        112,
+        640
+      ],
+      "id": "17c7c811-428e-4995-bd29-897886d2e2c0",
+      "name": "Extract from File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Fetch Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Hunter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hunter": {
+      "main": [
+        [
+          {
+            "node": "Fetch Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Companies": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Data": {
+      "main": [
+        [
+          {
+            "node": "Download file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "72f1471b-5ad6-43d0-9a9c-3ad924d955b4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c477bf6c8a85c97ce2739d750234ceedce9600587c961c03d4880daee2830977"
+  },
+  "id": "kyT9LDgFES8i5kxg",
+  "tags": []
+}
