@@ -1,79 +1,101 @@
-# Transparency.ai - AI Hiring Bias Detection & Mitigation System
+Here is the rewritten README with **your exact title preserved at the top**, formatted professionally for GitHub:
 
-A comprehensive framework for detecting, mitigating, and explaining biases in AI-assisted hiring systems using Large Language Models (LLMs). This project combines cutting-edge bias detection techniques with interpretable AI methods to create more fair and transparent hiring decisions.
+---
 
-## 🎯 Project Overview
+# **Mitigating Gender Bias in AI-Based Hiring Systems**
 
-This system addresses critical concerns about embedded biases in AI-driven hiring processes by providing:
+A full-stack framework designed to detect, mitigate, and explain gender-related biases in AI-assisted hiring pipelines using Large Language Models (LLMs). The project integrates modern fairness metrics, counterfactual analysis, and interpretable AI techniques to promote transparent and equitable hiring decisions.
 
-- **Bias Detection**: Quantitative analysis of hiring biases across demographic groups
-- **Bias Mitigation**: Implementation of counterfactual data augmentation and chain-of-thought prompting
-- **Explainable AI**: LIME-based explanations for hiring decisions and reasoning faithfulness
-- **Interactive Interface**: User-friendly web application for real-time bias analysis
+---
 
-## 🔬 Research Background
+## 🎯 **Overview**
 
-AI models trained on historical hiring data often perpetuate or amplify biases related to gender, race, age, and educational background. Our research demonstrates that combining counterfactual data augmentation with structured reasoning prompts can meaningfully reduce bias in LLM-driven hiring decisions while maintaining decision quality.
+This system focuses on identifying and reducing gender bias in AI-driven hiring by providing:
 
-### Key Findings
-- **10%+ reduction** in demographic parity gap for gender bias
-- Improved transparency through chain-of-thought reasoning
-- Enhanced interpretability using LIME explanations
-- Maintained reasonable decision accuracy despite bias mitigation
+* **Bias Detection:** Quantitative measurement of gender-based disparities
+* **Bias Mitigation:** Counterfactual augmentation + chain-of-thought (CoT) prompting
+* **Explainability:** LIME-based insights and reasoning faithfulness
+* **Interactive Frontend:** Real-time analysis and visualization tools
 
-## 🏗️ System Architecture
+---
 
-The system consists of three main components:
+## 🔬 **Background & Motivation**
 
-### 1. Bias Analysis Engine
-- Implements fairness metrics (demographic parity, equalized odds, predictive rate parity)
-- Processes candidate profiles from Stack Overflow Survey (73,462 entries) and Resume datasets (962 entries)
-- Generates statistical significance assessments using bootstrapped confidence intervals
+AI-driven hiring systems often inherit or amplify gender biases from historical recruitment data. Through structured reasoning prompts and counterfactual data augmentation, this system demonstrates meaningful reductions in gender bias while maintaining decision quality.
 
-### 2. Mitigation Techniques
-- **Counterfactual Data Augmentation**: Creates paired profiles with swapped sensitive attributes
-- **Chain-of-Thought Prompting**: Structured reasoning process with step-by-step evaluation
-- **LIME Integration**: Local interpretable model-agnostic explanations for decision transparency
+### **Key Findings**
 
-### 3. Web Interface
-- Real-time candidate profile analysis
-- Interactive bias visualization dashboards
-- Explainable AI decision breakdowns
-- Comparative analysis tools
+* **10%+ reduction** in gender demographic parity gaps
+* Improved transparency through step-by-step CoT reasoning
+* Enhanced interpretability using LIME
+* Minimal trade-offs in decision accuracy after mitigation
 
-## 🚀 Features
+---
 
-### Bias Detection & Analysis
-- Multi-demographic bias detection (gender, race, age, education)
-- Statistical significance testing with confidence intervals
-- Comparative analysis across different LLMs (Mistral 7B, Ollama 3.2)
-- Comprehensive fairness metrics computation
+## 🏗️ **System Architecture**
 
-### Explainable AI
-- **LIME-based Decision Analysis**: Identifies which features most influence hiring decisions
-- **Chain-of-Thought Faithfulness**: Measures how well reasoning steps align with candidate profiles
-- **Feature Attribution**: Highlights job-relevant vs. protected attribute influences
-- **Instance-level Explanations**: Provides transparent reasoning for individual decisions
+### **1. Bias Analysis Engine**
 
-### Interactive Frontend
-- **Dashboard Overview**: Real-time bias metrics and trends
-- **Candidate Analysis**: Upload and analyze individual candidate profiles
-- **Comparative Studies**: Side-by-side bias analysis across different models
-- **Explanation Viewer**: Interactive LIME explanations and reasoning chains
-- **Export Capabilities**: Generate reports and visualizations
+* Computes fairness metrics (demographic parity, equalized odds, predictive parity)
+* Analyzes profiles from:
 
+  * Stack Overflow Developer Survey (73k+ samples)
+  * Resume datasets (962 entries)
+* Uses bootstrapped confidence intervals for statistical significance
 
-### Prerequisites
-- Python 3.9+
-- Node.js & npm/yarn
-- Ollama (for local LLM inference)
+### **2. Bias Mitigation Module**
 
+* **Counterfactual Data Augmentation:** Creates gender-swapped parallel profiles
+* **Chain-of-Thought Prompting:** Guides LLMs with structured reasoning
+* **LIME Integration:** Produces interpretable explanations for each decision
 
-## 📊 Usage Examples
+### **3. Web Interface**
 
-### Analyzing Candidate Bias
+* Real-time candidate evaluations
+* Interactive bias visualizations
+* Explanation explorer for reasoning chains
+* Cross-model comparison tools
+
+---
+
+## 🚀 **Features**
+
+### **Bias Detection**
+
+* Detects gender-based disparities in model predictions
+* Provides statistical testing with confidence intervals
+* Supports multiple LLMs (e.g., Mistral 7B, Ollama models)
+
+### **Explainable AI**
+
+* LIME-based feature attribution
+* Reasoning faithfulness scoring
+* Highlights whether decisions rely excessively on gender cues
+* Provides per-candidate interpretability reports
+
+### **Interactive Frontend**
+
+* Bias metrics dashboard
+* Candidate profile analysis
+* Explanation visualization
+* Model comparison view
+* Exportable bias reports
+
+---
+
+## 🛠️ Prerequisites
+
+* **Python 3.9+**
+* **Node.js + npm/yarn**
+* **Ollama** (for local LLM inference)
+
+---
+
+## 📊 **Usage Examples**
+
+### **Gender Bias Analysis Request**
+
 ```python
-# Example API call for bias analysis
 POST /api/analyze-candidate
 {
   "profile": "Software Engineer with 5 years experience in Python and ML",
@@ -85,9 +107,9 @@ POST /api/analyze-candidate
 }
 ```
 
-### Generating Explanations
+### **Generating Model Explanations**
+
 ```python
-# Get LIME explanations for a decision
 POST /api/explain-decision
 {
   "candidate_id": "12345",
@@ -96,40 +118,29 @@ POST /api/explain-decision
 }
 ```
 
-## 🎨 Frontend Interface
-<img width="2530" height="1630" alt="image" src="https://github.com/user-attachments/assets/1bf3a14c-384d-4056-9fc2-4d794049ab21" />
+---
 
-The web interface provides several key screens:
+## 📈 **Evaluation Metrics**
 
-### 1. Dashboard
-- Overview of bias metrics across all analyzed candidates
-- Real-time statistics and trend visualizations
-- Model performance comparisons
+### **Fairness Metrics**
 
-### 2. Candidate Analysis
-- Upload candidate profiles (resume text, structured data)
-- Real-time bias scoring and decision prediction
-- Interactive explanation panels
+* **Demographic Parity:** Compares hiring rates across gender groups
+* **Equalized Odds:** Compares gender-specific error rates
+* **Predictive Rate Parity:** Ensures equal predictive value across genders
 
-### 3. Bias Visualization
-- Demographic parity charts
-- Equalized odds comparisons
-- Statistical significance indicators
+### **Explanation Quality**
 
-### 4. Explanation Explorer
-- LIME feature importance plots
-- Chain-of-thought reasoning breakdown
-- Faithfulness scores for explanations
+* **Faithfulness:** Whether explanations reflect true model behavior
+* **Relevance:** Alignment between reasoning and candidate data
+* **Consistency:** Stability across similar candidate profiles
 
-## 📈 Evaluation Metrics
+---
 
-### Fairness Metrics
-- **Demographic Parity**: Difference in selection rates between groups
-- **Equalized Odds**: Group-specific false positive/negative rates
-- **Predictive Rate Parity**: Comparative positive predictive values
+If you'd like, I can also:
 
-### Explanation Quality
-- **Faithfulness**: How well explanations reflect actual model behavior
-- **Relevance**: Alignment between reasoning steps and candidate data
-- **Consistency**: Stability of explanations across similar profiles
+✅ Add a **project banner**
+✅ Add **GitHub badges** (Python version, MIT license, build status, etc.)
+✅ Generate a **system architecture diagram**
+✅ Format this directly into your repository’s README.md
 
+Just tell me!
