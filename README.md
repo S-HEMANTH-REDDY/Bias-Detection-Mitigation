@@ -1,4 +1,18 @@
-# **Mitigating Gender Bias in AI-Based Hiring Systems**
+Mitigating Gender Bias in AI-Based Hiring Systems
+📌 Final Project – Group 17
+👥 Team Members
+
+Anshita Rayalla
+
+Bala Surya Krishna Vankayala
+
+Bhanu Prasad Cherukuvada
+
+Harshavardhan Chary Vadla
+
+Hemanth Reddy Sankaramaddi
+
+Sai Pooja Sabbani
 
 A full-stack framework designed to detect, mitigate, and explain gender-related biases in AI-assisted hiring pipelines using Large Language Models (LLMs). The project integrates modern fairness metrics, counterfactual analysis, and interpretable AI techniques to promote transparent and equitable hiring decisions.
 
