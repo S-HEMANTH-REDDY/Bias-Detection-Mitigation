@@ -1,4 +1,4 @@
-##**Mitigating Gender Bias in AI-Based Hiring Systems**
+##  **Mitigating Gender Bias in AI-Based Hiring Systems**
 
 📌 Final Project – Group 17
 
